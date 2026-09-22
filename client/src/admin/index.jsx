@@ -8,6 +8,7 @@ import { api } from '../api.js';
 import { useApi, Loader, PageHead, Progress, Modal, StatusBadge, Tabs, Empty, useAuth, useMeta, useToast, ago, fmtDate, Ar } from '../components/ui.jsx';
 import { Thread } from '../pages/personal.jsx';
 import { ResourceTable, ResourceForm, RefSelect, useAdminMeta } from './forms.jsx';
+import { JournalPage, SalaryPage, PayrollPage, ClassesPage } from './journal.jsx';
 
 export default function Admin() {
   return (
@@ -26,6 +27,10 @@ export default function Admin() {
       <Route path="/submissions" element={<Submissions />} />
       <Route path="/questions" element={<TeachQuestions />} />
       <Route path="/students" element={<Students />} />
+      <Route path="/journal" element={<JournalPage />} />
+      <Route path="/salary" element={<SalaryPage />} />
+      <Route path="/payroll" element={<PayrollPage />} />
+      <Route path="/classes" element={<ClassesPage />} />
     </Routes>
   );
 }
