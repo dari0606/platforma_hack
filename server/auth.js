@@ -19,8 +19,8 @@ const MAX_AGE = 1000 * 60 * 60 * 24 * 30;
 /** Role → permissions. Admin has everything. */
 export const PERMISSIONS = {
   student: [],
-  teacher: ['content.edit', 'content.approve', 'submissions.review', 'questions.answer', 'events.manage', 'analytics.view', 'assignments.manage', 'journal.own'],
-  curator: ['questions.answer', 'users.manage', 'groups.manage', 'access.grant', 'events.manage', 'notify.send', 'analytics.view', 'assignments.manage', 'journal.manage', 'payroll.manage'],
+  teacher: ['content.edit', 'content.approve', 'submissions.review', 'questions.answer', 'events.manage', 'analytics.view', 'assignments.manage'],
+  curator: ['questions.answer', 'users.manage', 'groups.manage', 'access.grant', 'events.manage', 'notify.send', 'analytics.view', 'assignments.manage'],
   admin: ['*'],
 };
 export const can = (user, perm) => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Home, BookOpen, PlayCircle, BookMarked, Type, Languages, Brain, PenLine, ClipboardCheck, Library, CalendarDays, BarChart3,
-  Bookmark, MessageCircleQuestion, CaseSensitive, Sprout, User, Search, Bell, LogOut, LayoutDashboard, Users, Layers, ShieldCheck, Megaphone, Mic, GraduationCap, X, CheckCheck, NotebookPen, Wallet, Contact,
+  Bookmark, MessageCircleQuestion, CaseSensitive, Sprout, User, Search, Bell, LogOut, LayoutDashboard, Users, Layers, ShieldCheck, Megaphone, Mic, GraduationCap, X, CheckCheck,
 } from 'lucide-react';
 import { api } from '../api.js';
 import { t } from '../i18n.js';
@@ -17,12 +17,7 @@ const STUDENT_NAV = [
 
 function staffNav(perms) {
   const has = (p) => perms.includes(p);
-  const mgr = has('journal.manage');
   return [
-    mgr ? ['/admin/journal', NotebookPen, 'Сабақ журналы'] : has('journal.own') && ['/teach/journal', NotebookPen, 'Сабақ журналы'],
-    !mgr && has('journal.own') && ['/teach/salary', Wallet, 'Менің жалақым'],
-    mgr && ['/admin/classes', Contact, 'Шәкірттер мен топтар'],
-    has('payroll.manage') && ['/admin/payroll', Wallet, 'Жалақы'],
     has('analytics.view') && ['/admin', LayoutDashboard, 'Аналитика'],
     has('submissions.review') && ['/teach/submissions', Mic, 'Тапсырмаларды тексеру'],
     has('questions.answer') && ['/teach/questions', MessageCircleQuestion, 'Оқушы сұрақтары'],
@@ -89,7 +84,7 @@ export default function Layout({ children }) {
         <header className="mobile-head">
           <Link to="/" className="brand-logo" style={{ width: 36, height: 36, fontSize: 16 }}>H</Link>
           <div className="li-body"><div className="bold">Hakk Academy</div></div>
-          {staff && <Link to={user.permissions.includes('journal.manage') ? '/admin/journal' : user.permissions.includes('journal.own') ? '/teach/journal' : '/admin'} className="icon-btn" aria-label="Сабақ журналы"><NotebookPen /></Link>}
+          {staff && <Link to={user.permissions.includes('analytics.view') ? '/admin' : '/teach/submissions'} className="icon-btn" aria-label="Панель"><LayoutDashboard /></Link>}
           <Link to="/calendar" className="icon-btn" aria-label={t('Күнтізбе')}><CalendarDays /></Link>
           <button className="icon-btn" onClick={() => setNotifOpen(true)} aria-label={t('Хабарламалар')}><Bell />{unread > 0 && <span className="dot">{unread}</span>}</button>
         </header>
