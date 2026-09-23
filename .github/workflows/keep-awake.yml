@@ -1,0 +1,15 @@
+# Бесплатный план Render усыпляет сайт после 15 минут простоя, и первый заход
+# тогда занимает почти минуту. Этот пинг каждые 10 минут держит сайт бодрым.
+name: keep-awake
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the site
+        run: |
+          if [ -z "${{ vars.SITE_URL }}" ]; then echo "SITE_URL variable is not set — skipping"; exit 0; fi
+          curl -sS -o /dev/null -w "%{http_code}\n" --max-time 60 "${{ vars.SITE_URL }}/api/health"

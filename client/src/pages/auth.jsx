@@ -57,6 +57,7 @@ export function Login() {
           <input id="pw" type="password" className="input" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
         <button className="btn lg block" disabled={busy}><LogIn />{busy ? 'Кіруде…' : t('Кіру')}</button>
+        <Link to="/" className="btn ghost block">Қонақ ретінде қарау (парольсіз)</Link>
       </form>
       {showDemo && <div className="card flat mt-lg" style={{ padding: 16 }}>
         <div className="small bold">Демо аккаунттар <span className="muted">(құпиясөз: hakk2026)</span></div>

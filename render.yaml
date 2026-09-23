@@ -1,18 +1,16 @@
-# Render.com Blueprint: New → Blueprint → choose this repository.
+# Render.com Blueprint — New → Blueprint → выберите этот репозиторий.
+# Бесплатный план: диска нет, поэтому база и файлы живут в облачном Postgres (Neon),
+# строку подключения добавьте в Environment как DATABASE_URL.
 services:
   - type: web
     name: hakk-academy
     runtime: docker
-    plan: starter            # persistent disk requires a paid plan (~$7/month)
+    plan: free
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DATA_DIR
-        value: /data
       - key: JWT_SECRET
         generateValue: true
-    disk:
-      name: hakk-data
-      mountPath: /data       # database + uploaded audio/files live here and survive deploys
-      sizeGB: 5
+      - key: DATABASE_URL
+        sync: false          # вставьте строку подключения Neon при первом запуске

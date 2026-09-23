@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
-import { get } from './db.js';
+import { get, importDiskUploads } from './db.js';
 import { sessionMiddleware } from './auth.js';
 import authRoutes from './routes/auth.js';
 import appRoutes from './routes/app.js';
@@ -57,11 +57,12 @@ app.use((err, _req, res, _next) => {
   res.status(err.status || 500).json({ error: err.code === 'LIMIT_FILE_SIZE' ? 'Файл тым үлкен (50 МБ-тан аспауы керек)' : err.message || 'Сервер қатесі' });
 });
 
-if (!get('SELECT 1 FROM users LIMIT 1')) { console.log('Empty database → seeding demo content…'); seed(); }
-try { importContent({ log: false }); } catch (e) { console.error('content import failed', e); }
-rebuildSearchIndex();
-setInterval(() => { try { runReminders(); } catch (e) { console.error('reminders', e); } }, 60 * 60 * 1000);
-setTimeout(() => { try { runReminders(); } catch (e) { console.error(e); } }, 5000);
+if (!(await get('SELECT 1 FROM users LIMIT 1'))) { console.log('Empty database → seeding demo content…'); await seed(); }
+try { await importContent({ log: false }); } catch (e) { console.error('content import failed', e.message); }
+await importDiskUploads().catch((e) => console.error('upload migration', e.message));
+await rebuildSearchIndex();
+setInterval(() => { runReminders().catch((e) => console.error('reminders', e.message)); }, 60 * 60 * 1000);
+setTimeout(() => { runReminders().catch((e) => console.error('reminders', e.message)); }, 5000);
 
 const PORT = Number(process.env.API_PORT || process.env.PORT) || 3001;
 app.listen(PORT, () => console.log(`Hakk Academy API → http://localhost:${PORT}`));

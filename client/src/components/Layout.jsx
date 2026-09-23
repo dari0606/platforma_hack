@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Home, BookOpen, PlayCircle, BookMarked, Type, Languages, Brain, PenLine, ClipboardCheck, Library, CalendarDays, BarChart3,
-  Bookmark, MessageCircleQuestion, CaseSensitive, Sprout, User, Search, Bell, LogOut, LayoutDashboard, Users, Layers, ShieldCheck, Megaphone, Mic, GraduationCap, X, CheckCheck,
+  Bookmark, MessageCircleQuestion, CaseSensitive, Sprout, LogIn, User, Search, Bell, LogOut, LayoutDashboard, Users, Layers, ShieldCheck, Megaphone, Mic, GraduationCap, X, CheckCheck,
 } from 'lucide-react';
 import { api } from '../api.js';
 import { t } from '../i18n.js';
@@ -31,6 +31,8 @@ function staffNav(perms) {
   ].filter(Boolean);
 }
 
+const GUEST_HIDDEN = new Set(['/practice', '/progress', '/saved', '/questions', '/profile']);
+
 const BOTTOM = [['/', Home, 'Басты бет'], ['/learning', BookOpen, 'Оқу'], ['/tafsir', BookMarked, 'Тәпсір'], ['/search', Search, 'Іздеу'], ['/profile', User, 'Профиль']];
 
 export default function Layout({ children }) {
@@ -50,6 +52,7 @@ export default function Layout({ children }) {
 
   const submit = (e) => { e.preventDefault(); if (q.trim()) nav(`/search?q=${encodeURIComponent(q.trim())}`); };
   const link = ([to, Icon, label]) => <NavLink key={to} to={to} end={to === '/' || to === '/admin'}><Icon />{t(label)}</NavLink>;
+  const menu = user.is_guest ? STUDENT_NAV.filter(([to]) => !GUEST_HIDDEN.has(to)) : STUDENT_NAV;
 
   return (
     <div className="app">
@@ -60,14 +63,15 @@ export default function Layout({ children }) {
         </Link>
         <nav className="nav" aria-label="Негізгі мәзір">
           {staff && <><div className="nav-label">{user.role === 'teacher' ? t('Ұстаз панелі') : t('Әкімші панелі')}</div>{staffNav(user.permissions).map(link)}<div className="nav-label">Оқу кеңістігі</div></>}
-          {STUDENT_NAV.map(link)}
+          {menu.map(link)}
         </nav>
         <div className="sidebar-foot">
+          {user.is_guest ? <Link to="/login" className="btn block"><LogIn />Кіру</Link> : (
           <div className="row">
             <div className="avatar">{initials(user.name)}</div>
             <div className="li-body"><div className="bold small ellipsis">{user.name}</div><div className="tiny muted">{{ student: 'Оқушы', teacher: 'Ұстаз', curator: 'Куратор', admin: 'Әкімші' }[user.role]}</div></div>
             <button className="icon-btn" onClick={logout} title={t('Шығу')} aria-label={t('Шығу')}><LogOut /></button>
-          </div>
+          </div>)}
         </div>
       </aside>
 
@@ -88,11 +92,21 @@ export default function Layout({ children }) {
           <Link to="/calendar" className="icon-btn" aria-label={t('Күнтізбе')}><CalendarDays /></Link>
           <button className="icon-btn" onClick={() => setNotifOpen(true)} aria-label={t('Хабарламалар')}><Bell />{unread > 0 && <span className="dot">{unread}</span>}</button>
         </header>
-        <main className="content">{children}</main>
+        <main className="content">
+          {user.is_guest && (
+            <div className="card lav row wrap mb" style={{ padding: 14 }}>
+              <span className="badge primary">Қонақ режимі</span>
+              <div className="li-body small">Барлық оқу материалдары ашық. Дауысыңызды жазу, тапсырма жіберу және прогресті сақтау үшін жүйеге кіріңіз.</div>
+              <Link to="/login" className="btn sm"><LogIn />Кіру</Link>
+            </div>
+          )}
+          {children}
+        </main>
       </div>
 
       <nav className="bottom-nav" aria-label="Мобильді мәзір">
-        {BOTTOM.map(([to, Icon, label]) => <NavLink key={to} to={to} end={to === '/'}><Icon />{t(label)}</NavLink>)}
+        {(user.is_guest ? [['/', Home, 'Басты бет'], ['/learning', BookOpen, 'Оқу'], ['/tafsir', BookMarked, 'Тәпсір'], ['/search', Search, 'Іздеу'], ['/login', LogIn, 'Кіру']] : BOTTOM)
+          .map(([to, Icon, label]) => <NavLink key={to} to={to} end={to === '/'}><Icon />{t(label)}</NavLink>)}
       </nav>
       {notifOpen && <Notifications onClose={() => setNotifOpen(false)} onRead={() => setUnread(0)} />}
     </div>

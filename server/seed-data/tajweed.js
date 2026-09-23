@@ -259,7 +259,7 @@ export const TOPICS = [
     },
   },
   {
-    slug: 'qalqala-darejeleri', category: 'tajweed', section: 'Қалқала', sort: 3.5, title: 'Қалқаланың дәрежелері', rule_tag: 'qalqala',
+    slug: 'qalqala-darejeleri', category: 'tajweed', section: 'Қалқала', sort: 12, title: 'Қалқаланың дәрежелері', rule_tag: 'qalqala',
     summary: 'Кіші, орта және үлкен қалқала.',
     simple: 'Қалқала күші әріптің қай жерде тұрғанына байланысты.',
     rule: 'Кіші — сөз ортасындағы сукун: يَدْخُلُونَ. Орта — сөз соңындағы сукун, тоқтағанда: ٱلْفَلَقْ. Үлкен — сөз соңындағы шаддалы әріпте тоқтағанда: وَتَبّْ (Мәсәд, 1), ٱلْحَقّْ.',
