@@ -10,10 +10,14 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const DATA_DIR = process.env.DATA_DIR || path.join(here, '..', 'data');
 export const UPLOAD_DIR = path.join(DATA_DIR, 'uploads');
-fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+try { fs.mkdirSync(UPLOAD_DIR, { recursive: true }); } catch { /* read-only filesystem (serverless) */ }
 export const DB_PATH = path.join(DATA_DIR, 'hakk.db');
 
-const URL_ = process.env.DATABASE_URL || '';
+// Vercel/Neon hand the connection string under different names
+const URL_ = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL || '';
+if (!URL_ && (process.env.VERCEL || process.env.SERVERLESS)) {
+  throw new Error('DATABASE_URL is not set. Serverless hosting has no disk for SQLite — connect a Postgres database (Vercel → Storage → Neon) and redeploy.');
+}
 export const DIALECT = URL_ ? 'pg' : 'sqlite';
 const txStore = new AsyncLocalStorage();
 

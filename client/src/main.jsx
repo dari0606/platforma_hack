@@ -33,8 +33,13 @@ function Protected({ user, children }) {
 function App() {
   const [user, setUser] = useState(undefined);
   const [meta, setMeta] = useState({});
+  const [serverDown, setServerDown] = useState(false);
 
-  useEffect(() => { api.get('/api/auth/me').then((r) => setUser(r.user)).catch(() => setUser(null)); }, []);
+  useEffect(() => {
+    api.get('/api/auth/me')
+      .then((r) => { setUser(r.user); setServerDown(false); })
+      .catch((e) => { setUser(null); setServerDown(e.status !== 401); });
+  }, []);
   useEffect(() => {
     if (!user) return;
     setLocale(user.locale || 'kk');
@@ -47,6 +52,17 @@ function App() {
   const logout = useCallback(async () => { await api.post('/api/auth/logout'); setUser(null); }, []);
 
   if (user === undefined) return <Spinner />;
+  if (serverDown) {
+    return (
+      <div style={{ maxWidth: 560, margin: '80px auto', padding: 24 }}>
+        <div className="card">
+          <h1>Сервер қосылмаған</h1>
+          <p className="muted mt">Платформаның сыртқы беті жұмыс істеп тұр, бірақ дерекқор мен сервер бөлігі әлі қосылмаған, сондықтан кіру де, қонақ режимі де мүмкін емес.</p>
+          <p className="small muted mt">Әкімшіге: хостингте Postgres дерекқорын қосып (DATABASE_URL), жобаны қайта жайыңыз. Нұсқаулық — DEPLOY.md.</p>
+        </div>
+      </div>
+    );
+  }
   const staff = user && user.role !== 'student';
 
   return (

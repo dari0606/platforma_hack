@@ -10,7 +10,8 @@
     "seed": "node server/seed.js --reset",
     "content": "node --disable-warning=ExperimentalWarning server/content.js",
     "passwords": "node --disable-warning=ExperimentalWarning server/passwords.js",
-    "public": "npm run build && NODE_ENV=production PORT=8080 node --disable-warning=ExperimentalWarning server/index.js"
+    "public": "npm run build && NODE_ENV=production PORT=8080 node --disable-warning=ExperimentalWarning server/index.js",
+    "setup:cloud": "node --disable-warning=ExperimentalWarning server/setup-cloud.js"
   },
   "engines": {
     "node": ">=22.13"
