@@ -4,7 +4,7 @@ import {
   Home, BookOpen, PlayCircle, BookMarked, Type, Languages, Brain, PenLine, ClipboardCheck, Library, CalendarDays, BarChart3,
   Bookmark, MessageCircleQuestion, CaseSensitive, Sprout, LogIn, User, Search, Bell, LogOut, LayoutDashboard, Users, Layers, ShieldCheck, Megaphone, Mic, GraduationCap, X, CheckCheck,
 } from 'lucide-react';
-import { api } from '../api.js';
+import { api, isStatic } from '../api.js';
 import { t } from '../i18n.js';
 import { useAuth, ago, initials } from './ui.jsx';
 
@@ -66,7 +66,7 @@ export default function Layout({ children }) {
           {menu.map(link)}
         </nav>
         <div className="sidebar-foot">
-          {user.is_guest ? <Link to="/login" className="btn block"><LogIn />Кіру</Link> : (
+          {user.is_guest ? (isStatic() ? <div className="small muted center">Ашық нұсқа · тіркелусіз</div> : <Link to="/login" className="btn block"><LogIn />Кіру</Link>) : (
           <div className="row">
             <div className="avatar">{initials(user.name)}</div>
             <div className="li-body"><div className="bold small ellipsis">{user.name}</div><div className="tiny muted">{{ student: 'Оқушы', teacher: 'Ұстаз', curator: 'Куратор', admin: 'Әкімші' }[user.role]}</div></div>
@@ -95,9 +95,11 @@ export default function Layout({ children }) {
         <main className="content">
           {user.is_guest && (
             <div className="card lav row wrap mb" style={{ padding: 14 }}>
-              <span className="badge primary">Қонақ режимі</span>
-              <div className="li-body small">Барлық оқу материалдары ашық. Дауысыңызды жазу, тапсырма жіберу және прогресті сақтау үшін жүйеге кіріңіз.</div>
-              <Link to="/login" className="btn sm"><LogIn />Кіру</Link>
+              <span className="badge primary">Ашық режим</span>
+              <div className="li-body small">{isStatic()
+                ? 'Барлық материалдар тіркелусіз ашық. Прогресіңіз осы құрылғының браузерінде сақталады.'
+                : 'Барлық оқу материалдары ашық. Дауысыңызды жазу және тапсырма жіберу үшін жүйеге кіріңіз.'}</div>
+              {!isStatic() && <Link to="/login" className="btn sm"><LogIn />Кіру</Link>}
             </div>
           )}
           {children}
@@ -105,7 +107,9 @@ export default function Layout({ children }) {
       </div>
 
       <nav className="bottom-nav" aria-label="Мобильді мәзір">
-        {(user.is_guest ? [['/', Home, 'Басты бет'], ['/learning', BookOpen, 'Оқу'], ['/tafsir', BookMarked, 'Тәпсір'], ['/search', Search, 'Іздеу'], ['/login', LogIn, 'Кіру']] : BOTTOM)
+        {(user.is_guest
+          ? [['/', Home, 'Басты бет'], ['/learning', BookOpen, 'Оқу'], ['/tafsir', BookMarked, 'Тәпсір'], ['/search', Search, 'Іздеу'], isStatic() ? ['/hifz', Sprout, 'Жаттау'] : ['/login', LogIn, 'Кіру']]
+          : BOTTOM)
           .map(([to, Icon, label]) => <NavLink key={to} to={to} end={to === '/'}><Icon />{t(label)}</NavLink>)}
       </nav>
       {notifOpen && <Notifications onClose={() => setNotifOpen(false)} onRead={() => setUnread(0)} />}

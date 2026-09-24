@@ -6,7 +6,7 @@ import '@fontsource/amiri-quran/arabic-400.css';
 import '@fontsource/noto-naskh-arabic/arabic-400.css';
 import '@fontsource/noto-naskh-arabic/arabic-600.css';
 import './styles.css';
-import { api } from './api.js';
+import { api, isStatic } from './api.js';
 import { setLocale } from './i18n.js';
 import { AuthCtx, MetaCtx, ToastProvider, Spinner } from './components/ui.jsx';
 import Layout from './components/Layout.jsx';
@@ -70,7 +70,7 @@ function App() {
       <MetaCtx.Provider value={meta}>
         <ToastProvider>
           <Routes>
-            <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+            <Route path="/login" element={user || isStatic() ? <Navigate to="/" replace /> : <Login />} />
             <Route path="/forgot" element={<Forgot />} />
             <Route path="/reset/:token" element={<Reset />} />
             <Route path="/*" element={
