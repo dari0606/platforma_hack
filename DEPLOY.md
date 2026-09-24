@@ -32,9 +32,12 @@
 
 ### Шаг 5. Чтобы сайт не «засыпал»
 На бесплатном тарифе Render усыпляет сайт после 15 минут без посетителей, и первый заход занимает около минуты.
-В проекте уже есть автоматический пинг каждые 10 минут (`.github/workflows/keep-awake.yml`). Включите его:
-GitHub → ваш репозиторий → **Settings → Secrets and variables → Actions → Variables → New variable**:
-имя `SITE_URL`, значение — адрес сайта (например `https://hakk-academy.onrender.com`).
+В проекте есть готовый файл автопинга: `deploy/keep-awake.yml`. Включите его так:
+1. GitHub → ваш репозиторий → вкладка **Actions** → **New workflow** → **set up a workflow yourself**.
+2. Вставьте содержимое файла `deploy/keep-awake.yml` и сохраните (**Commit changes**).
+3. **Settings → Secrets and variables → Actions → Variables → New variable**: имя `SITE_URL`, значение — адрес сайта (например `https://hakk-academy.onrender.com`).
+
+(Файл лежит не в `.github/workflows`, потому что для загрузки туда с компьютера нужен токен GitHub с правом `workflow`.)
 
 ### Перед запуском для учеников
 - Смените пароли: в Профиле или командой `npm run passwords` (Render → Shell).
